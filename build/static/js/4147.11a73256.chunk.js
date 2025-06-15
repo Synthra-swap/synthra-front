@@ -1,0 +1,1 @@
+(self.webpackChunk_synthra_swap_synthra_front_end=self.webpackChunk_synthra_swap_synthra_front_end||[]).push([[4147],{15340:()=>{},79838:()=>{}}]);
