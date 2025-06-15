@@ -8,7 +8,6 @@ A decentralized interface for token swapping on Ethereum and other blockchains. 
 - **Liquidity Pools**: Create and manage liquidity pools to earn fees
 - **Privacy-First**: No tracking, no centralized analytics
 - **Censorship Resistant**: Fully decentralized routing
-- **Multi-Chain**: Support for Ethereum and compatible networks
 
 ## 🛠 Technology Stack
 
