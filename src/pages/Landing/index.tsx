@@ -20,7 +20,7 @@ import { textFadeIn, TRANSITION_DURATIONS } from 'theme/styles'
 import { Z_INDEX } from 'theme/zIndex'
 
 const PageContainer = styled.div`
-  padding: ${({ theme }) => theme.navHeight}px 0px 0px 0px;
+  padding: calc(${({ theme }) => theme.navHeight}px + 40px) 0px 0px 0px; /* Adding 40px for testnet banner */
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -97,7 +97,7 @@ const ContentContainer = styled.div<{ isDarkMode: boolean }>`
   min-height: 535px;
   z-index: ${Z_INDEX.under_dropdown};
   transition: ${({ theme }) => `${theme.transition.duration.medium} ${theme.transition.timing.ease} opacity`};
-  height: ${({ theme }) => `calc(100vh - ${theme.navHeight + theme.mobileBottomBarHeight}px)`};
+  height: ${({ theme }) => `calc(100vh - ${theme.navHeight + theme.mobileBottomBarHeight + 40}px)`}; /* Adding 40px for testnet banner */
   pointer-events: none;
   * {
     pointer-events: auto;
@@ -275,7 +275,7 @@ const CardGrid = styled.div<{ cols: number }>`
   width: 100%;
   padding: 24px 0 0;
   max-width: 1440px;
-  scroll-margin: ${({ theme }) => `${theme.navHeight}px 0 0`};
+  scroll-margin: ${({ theme }) => `${theme.navHeight + 40}px 0 0`}; /* Adding 40px for testnet banner */
 
   grid-template-columns: 1fr;
   @media screen and (min-width: ${BREAKPOINTS.sm}px) {

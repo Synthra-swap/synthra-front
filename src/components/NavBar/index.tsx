@@ -1,6 +1,7 @@
 import { Trans } from '@lingui/macro';
 import { useWeb3React } from '@web3-react/core';
 import { useAccountDrawer } from 'components/AccountDrawer';
+import { useTestnetBanner } from 'components/TestnetBanner/context';
 import Web3Status from 'components/Web3Status';
 import { useIsPoolsPage } from 'hooks/useIsPoolsPage';
 import { VanaDarkIcon, VanaIcon } from 'nft/components/icons';
@@ -22,9 +23,9 @@ const MenuIcon = () => (
 );
 
 // Navbar main container - full width, fixed position, centered content
-const NavbarContainer = styled.header`
+const NavbarContainer = styled.header<{ $bannerVisible: boolean }>`
   position: fixed;
-  top: 0;
+  top: ${({ $bannerVisible }) => $bannerVisible ? '40px' : '0'};
   left: 0;
   right: 0;
   z-index: 100;
@@ -32,6 +33,7 @@ const NavbarContainer = styled.header`
   justify-content: center;
   padding: 16px;
   background: transparent;
+  transition: top 0.3s ease;
 `;
 
 // Inner container with pill shape
@@ -215,9 +217,9 @@ const MobileMenuOverlay = styled(motion.div)`
 `;
 
 // Mobile menu container
-const MobileMenuContainer = styled(motion.div)`
+const MobileMenuContainer = styled(motion.div)<{ $bannerVisible: boolean }>`
   position: fixed;
-  top: 88px;
+  top: ${({ $bannerVisible }) => $bannerVisible ? '128px' : '88px'};
   left: 16px;
   right: 16px;
   background: ${({ theme }) => theme.surface1 || '#191924'};
@@ -230,11 +232,12 @@ const MobileMenuContainer = styled(motion.div)`
   border: 1px solid ${({ theme }) => theme.surface3 || '#333340'};
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(20px);
+  transition: top 0.3s ease;
   
   @media (max-width: 480px) {
     left: 12px;
     right: 12px;
-    top: 84px;
+    top: ${({ $bannerVisible }) => $bannerVisible ? '124px' : '84px'};
   }
 `;
 
@@ -376,9 +379,10 @@ interface MobileMenuProps {
   isOpen: boolean;
   onClose: () => void;
   chainId: number | undefined;
+  bannerVisible: boolean;
 }
 
-const MobileMenu = ({ isOpen, onClose, chainId }: MobileMenuProps) => {
+const MobileMenu = ({ isOpen, onClose, chainId, bannerVisible }: MobileMenuProps) => {
   const { pathname } = useLocation();
   const isPoolActive = useIsPoolsPage();
   const infoUrl = getInfoUrl(chainId);
@@ -412,6 +416,7 @@ const MobileMenu = ({ isOpen, onClose, chainId }: MobileMenuProps) => {
         animate="visible"
         exit="exit"
         onClick={(e) => e.stopPropagation()}
+        $bannerVisible={bannerVisible}
       >
         <MobileMenuItem to="/swap" className={pathname.startsWith('/swap') ? 'active' : ''} onClick={onClose}>
           <Trans>Swap</Trans>
@@ -455,6 +460,7 @@ const Navbar = () => {
   const isDarkMode = useIsDarkMode();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { chainId } = useWeb3React();
+  const { isBannerVisible } = useTestnetBanner();
 
   const handleLogoClick = useCallback(() => {
     if (accountDrawerOpen) {
@@ -498,7 +504,7 @@ const Navbar = () => {
 
   return (
     <>
-      <NavbarContainer>
+      <NavbarContainer $bannerVisible={isBannerVisible}>
         <NavbarInner
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -538,6 +544,7 @@ const Navbar = () => {
           isOpen={isMobileMenuOpen}
           onClose={closeMobileMenu}
           chainId={chainId}
+          bannerVisible={isBannerVisible}
         />
       )}
     </>

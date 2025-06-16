@@ -2,6 +2,8 @@ import ErrorBoundary from 'components/ErrorBoundary'
 import Loader from 'components/Icons/LoadingSpinner'
 import { IpfsSubpathRedirect } from 'components/IpfsSubpathRedirect'
 import NavBar, { PageTabs } from 'components/NavBar'
+import { TestnetBanner } from 'components/TestnetBanner'
+import { TestnetBannerProvider, useTestnetBanner } from 'components/TestnetBanner/context'
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import styled, { keyframes } from 'styled-components'
@@ -34,14 +36,19 @@ const SynthraText = styled.span`
   background-image: linear-gradient(to right, #6114f1, #ff45db);
 `;
 
-const BodyWrapper = styled.div`
+const BodyWrapper = styled.div<{ $bannerVisible: boolean }>`
   display: flex;
   flex-direction: column;
   width: 100%;
   min-height: calc(100vh);
-  padding: ${({ theme }) => theme.navHeight}px 0px 0rem 0px;
+  padding: ${({ theme, $bannerVisible }) => 
+    $bannerVisible 
+      ? `calc(${theme.navHeight}px + 40px) 0px 0rem 0px` 
+      : `${theme.navHeight}px 0px 0rem 0px`
+  };
   align-items: center;
   flex: 1;
+  transition: padding 0.3s ease;
 
   @media only screen and (max-width: ${({ theme }) => `${theme.breakpoint.md}px`}) {
     min-height: 100vh;
@@ -73,15 +80,16 @@ const MobileBottomBar = styled.div`
   }
 `
 
-const HeaderWrapper = styled.div<{ transparent?: boolean; scrollY: number }>`
+const HeaderWrapper = styled.div<{ transparent?: boolean; scrollY: number; $bannerVisible: boolean }>`
   ${flexRowNoWrap};
   background-color: ${({ theme, transparent }) => !transparent && theme.surface1};
   border-bottom: ${({ theme, transparent }) => !transparent && `1px solid ${theme.surface3}`};
   width: 100%;
   justify-content: space-between;
   position: fixed;
-  top: 0;
+  top: ${({ $bannerVisible }) => $bannerVisible ? '40px' : '0'};
   z-index: ${Z_INDEX.dropdown};
+  transition: top 0.3s ease;
 
   @media only screen and (max-width: ${({ theme }) => `${theme.breakpoint.md}px`}) {
     top: 0;
@@ -92,12 +100,13 @@ const HeaderWrapper = styled.div<{ transparent?: boolean; scrollY: number }>`
   }
 `
 
-export default function App() {
+function AppContent() {
   const location = useLocation()
   const { pathname } = location
   const [scrollY, setScrollY] = useState(0)
   const scrolledState = scrollY > 0
   const routerConfig = useRouterConfig()
+  const { isBannerVisible } = useTestnetBanner()
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -122,13 +131,14 @@ export default function App() {
 
   return (
     <ErrorBoundary>
+      <TestnetBanner />
       <OS2OnboardingPopup />
       <IpfsSubpathRedirect />
       <DarkModeQueryParamReader />
-      <HeaderWrapper transparent={isHeaderTransparent} scrollY={scrollY}>
-        <NavBar blur={isHeaderTransparent} />
+      <HeaderWrapper transparent={isHeaderTransparent} scrollY={scrollY} $bannerVisible={isBannerVisible}>
+        <NavBar />
       </HeaderWrapper>
-      <BodyWrapper>
+      <BodyWrapper $bannerVisible={isBannerVisible}>
         <Suspense>
           <AppChrome />
         </Suspense>
@@ -150,6 +160,14 @@ export default function App() {
         <PageTabs />
       </MobileBottomBar>
     </ErrorBoundary>
+  )
+}
+
+export default function App() {
+  return (
+    <TestnetBannerProvider>
+      <AppContent />
+    </TestnetBannerProvider>
   )
 }
 
