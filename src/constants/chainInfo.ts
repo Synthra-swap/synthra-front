@@ -49,16 +49,16 @@ export interface L2ChainInfo extends BaseChainInfo {
 type ChainInfoMap = { readonly [chainId: number]: L1ChainInfo | L2ChainInfo }
 
 const CHAIN_INFO: ChainInfoMap = {
-  [ChainId.MAINNET]: {
-    networkType: NetworkType.L1,
-    docs: 'https://docs.uniswap.org/',
-    explorer: 'https://etherscan.io/',
-    infoLink: 'https://info.uniswap.org/#/',
-    label: 'Ethereum',
-    logoUrl: ethereumLogoUrl,
-    nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
-    color: darkTheme.chain_1,
-  },
+  // [ChainId.MAINNET]: {
+  //   networkType: NetworkType.L1,
+  //   docs: 'https://docs.uniswap.org/',
+  //   explorer: 'https://etherscan.io/',
+  //   infoLink: 'https://info.uniswap.org/#/',
+  //   label: 'Ethereum',
+  //   logoUrl: ethereumLogoUrl,
+  //   nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+  //   color: darkTheme.chain_1,
+  // },
   // [ChainId.GOERLI]: {
   //   networkType: NetworkType.L1,
   //   docs: 'https://docs.uniswap.org/',
