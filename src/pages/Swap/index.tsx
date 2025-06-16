@@ -425,7 +425,7 @@ export default function SwapPage({ className }: { className?: string }) {
         {/* Banner slider is now positioned absolutely, so it doesn't need to be before Swap */}
         <Swap
           className={className}
-          chainId={supportedChainId ?? ChainId.UOMI}
+          chainId={ChainId.UOMI}
           initialInputCurrencyId={loadedUrlParams?.[Field.INPUT]?.currencyId}
           initialOutputCurrencyId={loadedUrlParams?.[Field.OUTPUT]?.currencyId}
           disableTokenInputs={supportedChainId === undefined}
@@ -1044,7 +1044,7 @@ function Swap({
                 <Trans>Connect wallet</Trans>
               </ButtonLight>
             </motion.div>
-          ) : chainId && chainId !== connectedChainId && connectedChainId !== 4386 ? (
+          ) : chainId && chainId !== connectedChainId ? (
             <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
               <StyledButtonPrimary
                 $borderRadius="16px"
@@ -1310,7 +1310,7 @@ function Swap({
                 <Trans>Connect wallet</Trans>
               </StyledButtonPrimary>
             </motion.div>
-          ) : chainId && chainId !== connectedChainId && connectedChainId !== 4386? (
+          ) : chainId && chainId !== connectedChainId ? (
             <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
               <StyledButtonPrimary
                 onClick={async () => {
