@@ -269,7 +269,7 @@ const OS2OnboardingPopup = () => {
                   <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
                 </svg>
               </div>
-              <p className="text-white">Share feedback directly to the OpenSea team</p>
+              <p className="text-white">Share feedback directly to the Synthra team</p>
             </div>
             
             <div className="flex items-start space-x-3">

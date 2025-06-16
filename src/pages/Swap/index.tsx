@@ -1044,7 +1044,7 @@ function Swap({
                 <Trans>Connect wallet</Trans>
               </ButtonLight>
             </motion.div>
-          ) : chainId && chainId !== connectedChainId ? (
+          ) : chainId && chainId !== connectedChainId && connectedChainId !== 4386 ? (
             <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
               <StyledButtonPrimary
                 $borderRadius="16px"
@@ -1310,7 +1310,7 @@ function Swap({
                 <Trans>Connect wallet</Trans>
               </StyledButtonPrimary>
             </motion.div>
-          ) : chainId && chainId !== connectedChainId ? (
+          ) : chainId && chainId !== connectedChainId && connectedChainId !== 4386? (
             <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
               <StyledButtonPrimary
                 onClick={async () => {
