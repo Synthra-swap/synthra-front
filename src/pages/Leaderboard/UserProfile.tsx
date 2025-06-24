@@ -1396,7 +1396,7 @@ export default function UserProfile() {
 
   const openInExplorer = () => {
     if (!user) return
-    window.open(`https://explorer.vana.org/address/${user.id}`, '_blank')
+    window.open(`https://explorer.uomi.ai/address/${user.id}`, '_blank')
   }
 
   if (loading) {
