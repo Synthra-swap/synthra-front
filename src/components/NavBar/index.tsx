@@ -366,6 +366,9 @@ export const PageTabs = () => {
       <MenuItem href="/earn">
         <p>Earn</p>
       </MenuItem>
+      <MenuItem href="/leaderboard">
+        <Trans>Leaderboard</Trans>
+      </MenuItem>
       <ExternalMenuItem href={infoUrl}>
         <Trans>Info</Trans>
       </ExternalMenuItem>
@@ -427,11 +430,11 @@ const MobileMenu = ({ isOpen, onClose, chainId, bannerVisible }: MobileMenuProps
         <MobileMenuItem to="/earn" className={pathname.startsWith('/earn') ? 'active' : ''} onClick={onClose}>
           <p>Earn</p>
         </MobileMenuItem>
+        <MobileMenuItem to="/leaderboard" className={pathname.startsWith('/leaderboard') ? 'active' : ''} onClick={onClose}>
+          <Trans>Leaderboard</Trans>
+        </MobileMenuItem>
         <MobileExternalMenuItem href={infoUrl} target="_blank" rel="noopener noreferrer" onClick={onClose}>
           <Trans>Info</Trans>
-        </MobileExternalMenuItem>
-        <MobileExternalMenuItem href="https://stargate.finance/bridge?srcChain=vana" target="_blank" rel="noopener noreferrer" onClick={onClose}>
-          <Trans>Bridge</Trans>
         </MobileExternalMenuItem>
         <div style={{ 
           padding: '20px 0 0', 

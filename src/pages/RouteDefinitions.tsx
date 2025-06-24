@@ -21,6 +21,8 @@ const RemoveLiquidityV3 = lazy(() => import('pages/RemoveLiquidity/V3'))
 const TermsOfUse = lazy(() => import('pages/TermsOfUse'))
 const Landing = lazy(() => import('pages/Landing'))
 const Earn = lazy(() => import('pages/Earn'))
+const Leaderboard = lazy(() => import('pages/Leaderboard'))
+const UserProfile = lazy(() => import('pages/Leaderboard/UserProfile'))
 interface RouterConfig {
   hash?: string
 }
@@ -73,6 +75,8 @@ export const routes: RouteDefinition[] = [
   createRouteDefinition({ path: '/pools', getElement: () => <Pool /> }),
   createRouteDefinition({ path: '/pools/:tokenId', getElement: () => <PositionPage /> }),
   createRouteDefinition({ path: '/earn', getElement: () => <Earn /> }),
+  createRouteDefinition({ path: '/leaderboard', getElement: () => <Leaderboard /> }),
+  createRouteDefinition({ path: '/leaderboard/profile/:userId', getElement: () => <UserProfile /> }),
   createRouteDefinition({ path: '/privacy-policy', getElement: () => <PrivacyPolicy /> }),
   createRouteDefinition({ path: '/terms-of-use', getElement: () => <TermsOfUse /> }),
   createRouteDefinition({ path: '/whatishorswap', getElement: () => <WhatIsHorswap /> }),

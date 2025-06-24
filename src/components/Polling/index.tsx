@@ -24,6 +24,7 @@ const StyledPolling = styled.div`
   position: fixed;
   right: 0;
   transition: 250ms ease color;
+  z-index: 9;
 
   a {
     color: unset;
@@ -44,6 +45,7 @@ const StyledPollingBlockNumber = styled(ThemedText.DeprecatedSmall)<{
 }>`
   color: ${({ theme, warning }) => (warning ? theme.deprecated_yellow3 : theme.success)};
   transition: opacity 0.25s ease;
+  z-index: 9999;
   opacity: ${({ breathe, hovering }) => (hovering ? 0.7 : breathe ? 1 : 0.5)};
   :hover {
     opacity: 1;

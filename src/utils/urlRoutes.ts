@@ -5,6 +5,10 @@ export function getCurrentPageFromLocation(locationPathname: string) {
     case locationPathname.startsWith('/pools'):
     case locationPathname.startsWith('/pool'):
       return 'POOL_PAGE'
+    case locationPathname.startsWith('/leaderboard'):
+      return 'LEADERBOARD_PAGE'
+    case locationPathname.startsWith('/earn'):
+      return 'EARN_PAGE'
     case locationPathname.startsWith('/tokens'):
       return 'TOKENS_PAGE'
     default:
