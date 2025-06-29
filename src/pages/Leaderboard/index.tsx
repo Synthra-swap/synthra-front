@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import styled, { useTheme, keyframes } from "styled-components";
 import { ThemedText } from "theme/components";
 import { PageWrapper as SwapPageWrapper } from "components/swap/styled";
-import { TrendingUp, Info, BarChart, Users } from "react-feather";
+import { TrendingUp, Info, BarChart, Users, Grid, List, Filter, Eye } from "react-feather";
 import * as d3 from "d3";
 import StatusIcon from "components/Identicon/StatusIcon";
 import { getConnection } from "connection";
@@ -150,6 +150,93 @@ const SectionTitle = styled(ThemedText.SubHeader)`
   font-weight: 600;
 `;
 
+// NEW: Controls for filtering and view mode
+const ControlsSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-shrink: 0;
+`;
+
+const ViewModeToggle = styled.div`
+  display: flex;
+  gap: 8px;
+  padding: 4px;
+  background: ${({ theme }) => theme.surface2};
+  border-radius: 12px;
+  border: 1px solid ${({ theme }) => theme.surface3};
+`;
+
+const ViewModeButton = styled.button<{ $active: boolean }>`
+  flex: 1;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  background: ${({ $active, theme }) => $active ? theme.accent1 : 'transparent'};
+  color: ${({ $active, theme }) => $active ? theme.surface1 : theme.neutral2};
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+
+  &:hover {
+    background: ${({ $active, theme }) => $active ? theme.accent1 : theme.surface3};
+  }
+`;
+
+const FilterSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+
+const FilterLabel = styled(ThemedText.LabelMicro)`
+  color: ${({ theme }) => theme.neutral2};
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+`;
+
+const FilterSlider = styled.input`
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  background: ${({ theme }) => theme.surface3};
+  outline: none;
+  cursor: pointer;
+
+  &::-webkit-slider-thumb {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: ${({ theme }) => theme.accent1};
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  }
+
+  &::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: ${({ theme }) => theme.accent1};
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  }
+`;
+
+const FilterValue = styled(ThemedText.BodySmall)`
+  color: ${({ theme }) => theme.neutral1};
+  font-weight: 600;
+  text-align: center;
+`;
+
 const UserList = styled.div`
   display: flex;
   flex-direction: column;
@@ -237,7 +324,7 @@ const PerformanceStats = styled.div`
 const SidebarVolumeAmount = styled(ThemedText.BodySmall)`
   font-weight: 700;
   color: #fff;
-text-shadow: 0 0 6px ${({ theme }) => theme.accent1};
+  text-shadow: 0 0 6px ${({ theme }) => theme.accent1};
   font-size: 14px;
 `;
 
@@ -301,7 +388,6 @@ const VolumeText = styled(ThemedText.LabelMicro)`
   text-overflow: ellipsis;
 `;
 
-
 // Main Content Area con tema moderno
 const MainContent = styled.div`
   display: flex;
@@ -362,7 +448,6 @@ const HeaderContent = styled.div`
   gap: 4px;
 `;
 
-
 // Tree Map Container più compatto
 const TreeMapContainer = styled.div`
   position: relative;
@@ -406,6 +491,107 @@ const TreeMapContainer = styled.div`
   }
 `;
 
+// NEW: Grid view as alternative to treemap
+const GridContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  padding: 16px;
+`;
+
+const GridUserCard = styled(Link)`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  background: ${({ theme }) => theme.surface2};
+  border-radius: 16px;
+  border: 1px solid ${({ theme }) => theme.surface3};
+  transition: all 0.2s ease;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  overflow: hidden;
+
+  &:hover {
+    background: ${({ theme }) => theme.surface3};
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    text-decoration: none;
+    color: inherit;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, 
+      ${({ theme }) => theme.accent1}15, 
+      ${({ theme }) => theme.accent1}05
+    );
+    border-radius: 0 16px 0 60px;
+  }
+`;
+
+const GridUserHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const GridUserInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+`;
+
+const GridUserStats = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+`;
+
+const GridVolumeDisplay = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const GridVolumeAmount = styled(ThemedText.SubHeader)`
+  color: #fff;
+  text-shadow: 0 0 6px ${({ theme }) => theme.accent1};
+  font-size: 18px;
+  font-weight: 700;
+`;
+
+const GridPerformanceChange = styled.div<{ $positive: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  color: ${({ $positive, theme }) =>
+    $positive ? theme.success : theme.critical};
+
+  &::before {
+    content: "${({ $positive }) => ($positive ? "📈" : "📉")}";
+    font-size: 12px;
+  }
+`;
+
+const GridMiniChart = styled.div`
+  height: 40px;
+  margin-top: 8px;
+  opacity: 0.8;
+`;
+
 const TreeMapWrapper = styled.div<{ $dynamicHeight: number }>`
   width: 100%;
   height: ${({ $dynamicHeight }) => $dynamicHeight}px;
@@ -428,20 +614,17 @@ const TreeMapWrapper = styled.div<{ $dynamicHeight: number }>`
 const calculateTreemapHeight = (walletCount: number): number => {
   if (walletCount === 0) return 500;
   
-  // Base calculation: more wallets need more height
-  // Using a more aggressive scaling for better visibility
-  const baseHeight = 500 + Math.log(walletCount) * 120;
-  
-  // Additional height for better visibility with many wallets
-  const additionalHeight = Math.min(walletCount * 8, 400);
+  // More conservative height calculation for better readability with fewer nodes
+  const baseHeight = 500;
+  const additionalHeight = Math.min(walletCount * 4, 200); // Reduced scaling
   
   const calculatedHeight = baseHeight + additionalHeight;
   
-  // Clamp between min and max values with higher limits
-  return Math.max(500, Math.min(calculatedHeight, 1200));
+  // Clamp between min and max values
+  return Math.max(500, Math.min(calculatedHeight, 800)); // Reduced max height
 };
 
-// Treemap D3 Component
+// Treemap D3 Component with improved readability
 const TreemapNode = styled.div<{ 
   $x: number
   $y: number
@@ -449,6 +632,7 @@ const TreemapNode = styled.div<{
   $height: number
   $rank: number
   $volume: number
+  $showDetails: boolean
 }>`
   position: absolute;
   left: ${({ $x }) => $x}px;
@@ -456,30 +640,31 @@ const TreemapNode = styled.div<{
   width: ${({ $width }) => $width}px;
   height: ${({ $height }) => $height}px;
   background: ${({ $rank, theme }) => {
-  if ($rank === 1) {
-    return `linear-gradient(135deg, #5821B7, #000)`; // viola acceso
-  }
-  if ($rank === 2) {
-    return `linear-gradient(135deg, #D1D5DB, #000)`; // argento
-  }
-  if ($rank === 3) {
-    return `linear-gradient(135deg, #F97316, #000)`; // bronzo-arancio
-  }
-  return 'linear-gradient(135deg, #1F2937, #000)'; // grigio scuro per altri
-}};
-box-shadow: ${({ $rank }) => {
-  if ($rank === 1) return `0 0 12px #8B5CF6aa`;
-  if ($rank === 2) return `0 0 10px #D1D5DBcc`;
-  if ($rank === 3) return `0 0 10px #F97316cc`;
-  return `inset 0 0 6px rgba(255,255,255,0.05)`; // glow soft per altri
-}};
+    if ($rank === 1) {
+      return `linear-gradient(135deg, #5821B7, #000)`;
+    }
+    if ($rank === 2) {
+      return `linear-gradient(135deg, #D1D5DB, #000)`;
+    }
+    if ($rank === 3) {
+      return `linear-gradient(135deg, #F97316, #000)`;
+    }
+    return 'linear-gradient(135deg, #1F2937, #000)';
+  }};
+  box-shadow: ${({ $rank }) => {
+    if ($rank === 1) return `0 0 12px #8B5CF6aa`;
+    if ($rank === 2) return `0 0 10px #D1D5DBcc`;
+    if ($rank === 3) return `0 0 10px #F97316cc`;
+    return `inset 0 0 6px rgba(255,255,255,0.05)`;
+  }};
   border-radius: 16px;
-  padding: 16px;
+  padding: ${({ $showDetails }) => $showDetails ? '16px' : '8px'};
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: ${({ $showDetails }) => $showDetails ? 'space-between' : 'center'};
+  align-items: ${({ $showDetails }) => $showDetails ? 'stretch' : 'center'};
   overflow: hidden;
   animation: ${fadeIn} 0.6s ease-out;
   animation-delay: ${({ $rank }) => $rank * 0.1}s;
@@ -488,65 +673,34 @@ box-shadow: ${({ $rank }) => {
   backdrop-filter: blur(10px);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   
-  
   &:hover {
     transform: translateY(-4px) scale(1.02);
     z-index: 10;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-    background: ${({ $rank, theme }) => {
-      if ($rank === 1) {
-        return `linear-gradient(135deg, #5821B7, #000)`;
-      }
-      if ($rank === 2) {
-        return `linear-gradient(135deg, #D1D5DB, #000)`;
-      }
-      if ($rank === 3) {
-        return `linear-gradient(135deg, #F97316, #000)`;
-      }
-      return 'linear-gradient(135deg, #1F2937, #000)';
-    }};
   }
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, 
-      ${({ theme }) => theme.accent1}08, 
-      ${({ theme }) => theme.accent1}02
-    );
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    border-radius: 16px;
-  }
-  
-  &:hover::before {
-    opacity: 1;
-  }
-`
-
-const NodeHeader = styled.div`
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: 8px;
 `;
 
-const WalletInfo = styled.div`
+const NodeHeader = styled.div<{ $compact: boolean }>`
+  display: flex;
+  align-items: ${({ $compact }) => $compact ? 'center' : 'flex-start'};
+  justify-content: ${({ $compact }) => $compact ? 'center' : 'space-between'};
+  margin-bottom: ${({ $compact }) => $compact ? '0' : '8px'};
+  gap: ${({ $compact }) => $compact ? '4px' : '8px'};
+`;
+
+const WalletInfo = styled.div<{ $compact: boolean }>`
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: ${({ $compact }) => $compact ? '4px' : '8px'};
   min-width: 0;
   flex: 1;
+  flex-direction: ${({ $compact }) => $compact ? 'column' : 'row'};
 `;
 
-const WalletAvatar = styled.div<{ $rank: number }>`
-  width: ${({ $rank }) => $rank <= 3 ? '36px' : '28px'};
-  height: ${({ $rank }) => $rank <= 3 ? '36px' : '28px'};
-  border-radius: 10px;
+const WalletAvatar = styled.div<{ $rank: number; $size: number }>`
+  width: ${({ $size }) => $size}px;
+  height: ${({ $size }) => $size}px;
+  border-radius: ${({ $size }) => Math.max(6, Math.min($size / 4, 10))}px;
   background: ${({ theme }) => theme.surface2};
   border: 2px solid ${({ theme }) => theme.surface3};
   display: flex;
@@ -560,59 +714,60 @@ const WalletAvatar = styled.div<{ $rank: number }>`
   & > div {
     margin-right: 0 !important;
   }
-`
-
-const WalletDetails = styled.div`
-  min-width: 0;
-  flex: 1;
 `;
 
-const WalletAddressStyled = styled(ThemedText.BodySmall)`
+const WalletDetails = styled.div<{ $compact: boolean }>`
+  min-width: 0;
+  flex: 1;
+  text-align: ${({ $compact }) => $compact ? 'center' : 'left'};
+`;
+
+const WalletAddressStyled = styled(ThemedText.BodySmall)<{ $fontSize: number }>`
   font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
   font-weight: 600;
   color: ${({ theme }) => theme.neutral1};
-  font-size: 11px;
+  font-size: ${({ $fontSize }) => $fontSize}px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   margin-bottom: 2px;
 `;
 
-const RankBadge = styled.div<{ $rank: number }>`
+const RankBadge = styled.div<{ $rank: number; $size: number }>`
   background: ${({ theme, $rank }) => {
-    if ($rank === 1) return `linear-gradient(135deg, ${theme.accent1}, ${theme.accent2})`
-    if ($rank === 2) return `linear-gradient(135deg, #C0C0C0, #E8E8E8)`
-    if ($rank === 3) return `linear-gradient(135deg, #CD7F32, #FFB347)`
-    return theme.surface3
+    if ($rank === 1) return `linear-gradient(135deg, ${theme.accent1}, ${theme.accent2})`;
+    if ($rank === 2) return `linear-gradient(135deg, #C0C0C0, #E8E8E8)`;
+    if ($rank === 3) return `linear-gradient(135deg, #CD7F32, #FFB347)`;
+    return theme.surface3;
   }};
   color: ${({ theme, $rank }) => 
     $rank <= 3 ? theme.surface1 : theme.neutral1
   };
-  padding: 4px 8px;
+  padding: ${({ $size }) => Math.max(2, $size / 8)}px ${({ $size }) => Math.max(4, $size / 4)}px;
   text-shadow: ${({ $rank, theme }) =>
-  $rank <= 3 ? `0 0 6px ${theme.accent1}` : 'none'};
-  border-radius: 6px;
-  font-size: 10px;
+    $rank <= 3 ? `0 0 6px ${theme.accent1}` : 'none'};
+  border-radius: ${({ $size }) => Math.max(4, $size / 6)}px;
+  font-size: ${({ $size }) => Math.max(8, $size / 2)}px;
   font-weight: 700;
   text-align: center;
-  min-width: 24px;
+  min-width: ${({ $size }) => $size}px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   flex-shrink: 0;
-`
-
-const VolumeDisplay = styled.div`
-  margin-top: auto;
 `;
 
-const VolumeAmount = styled(ThemedText.SubHeader)`
- color: #fff;
-text-shadow: 0 0 6px ${({ theme }) => theme.accent1};
-  font-size: 12px;
+const VolumeDisplay = styled.div<{ $show: boolean }>`
+  margin-top: auto;
+  display: ${({ $show }) => $show ? 'block' : 'none'};
+`;
+
+const VolumeAmount = styled(ThemedText.SubHeader)<{ $fontSize: number }>`
+  color: #fff;
+  text-shadow: 0 0 6px ${({ theme }) => theme.accent1};
+  font-size: ${({ $fontSize }) => $fontSize}px;
   font-weight: 700;
   margin-bottom: 2px;
   line-height: 1.2;
 `;
-
 
 // Mini chart component for larger nodes
 const MiniChart = styled.div<{ $visible: boolean }>`
@@ -626,158 +781,7 @@ const MiniChart = styled.div<{ $visible: boolean }>`
   pointer-events: none;
 `;
 
-// Treemap component using D3
-interface TreemapComponentProps {
-  users: any[];
-  totalVolume: number;
-  width: number;
-  height: number;
-  connection: Connection;
-}
-
-const TreemapComponent = ({
-  users,
-  totalVolume,
-  width,
-  height,
-  connection,
-}: TreemapComponentProps) => {
-  const theme = useTheme();
-
-  const treemapData = useMemo(() => {
-    if (!users || users.length === 0) return [];
-
-    const data = users.map((user, index) => {
-      const volume = parseFloat(user.totalVolumeUSD || "0");
-
-      return {
-        id: user.id,
-        originalValue: volume,
-        rank: index + 1,
-        percentage:
-          totalVolume > 0 ? ((volume / totalVolume) * 100).toFixed(2) : "0.00",
-      };
-    });
-
-    // Normalizzazione per evitare che il primo valore domini troppo
-    const values = data.map((d) => d.originalValue).filter((v) => v > 0);
-    if (values.length === 0) return [];
-
-    const maxValue = Math.max(...values);
-    const minValue = Math.min(...values);
-    const range = maxValue - minValue;
-
-    // Applica una scala logaritmica bilanciata per tutti i nodi con dimensioni minime garantite
-    const normalizedData = data.map((d) => {
-      let normalizedValue;
-
-      if (d.originalValue <= 0) {
-        normalizedValue = 100; // Valore base più alto per volumi zero
-      } else if (d.rank === 1) {
-        // Il primo nodo deve essere più grande ma non dominante
-        normalizedValue = Math.log(d.originalValue + 1) * 90 + 400;
-      } else if (d.rank <= 3) {
-        // Top 3 con buona visibilità
-        normalizedValue = Math.log(d.originalValue + 1) * 80 + 250;
-      } else if (d.rank <= 10) {
-        // Top 10 con dimensioni decenti
-        normalizedValue = Math.log(d.originalValue + 1) * 70 + 180;
-      } else {
-        // Altri nodi con dimensione minima garantita per leggibilità
-        normalizedValue = Math.log(d.originalValue + 1) * 60 + 120;
-      }
-
-      return {
-        ...d,
-        value: normalizedValue,
-      };
-    });
-
-    // Use D3 treemap layout con valori normalizzati
-    const root = d3
-      .hierarchy({ children: normalizedData })
-      .sum((d) => (d as any).value)
-      .sort((a, b) => ((a as any).rank || 0) - ((b as any).rank || 0)); // Ordina per rank, non per valore
-
-    const treemap = d3
-      .treemap<any>()
-      .size([width, height])
-      .padding(6)
-      .paddingInner(8)
-      .paddingOuter(16)
-      .round(true);
-
-    treemap(root);
-
-    return (root.leaves() as any[]).map((d: any) => ({
-      ...d.data,
-      x: d.x0,
-      y: d.y0,
-      width: Math.max(d.x1 - d.x0, 120), // Dimensione minima aumentata per leggibilità
-      height: Math.max(d.y1 - d.y0, 80), // Altezza minima aumentata per testi
-    }));
-  }, [users, totalVolume, width, height]);
-
-  const formatUserAddress = (address: string) => {
-    if (!address) return "0x...";
-    return `${address.slice(0, 6)}...${address.slice(-4)}`;
-  };
-
-  const formatVolume = (volume: number) => {
-    if (volume >= 1000000) return (volume / 1000000).toFixed(2) + "M";
-    if (volume >= 1000) return (volume / 1000).toFixed(2) + "K";
-    return volume.toFixed(2);
-  };
-
-  return (
-    <div style={{ position: "relative", width: "100%", height: "100%" }}>
-      {treemapData.map((node: any) => (
-        <TreemapNode
-          key={node.id}
-          $x={node.x}
-          $y={node.y}
-          $width={node.width}
-          $height={node.height}
-          $rank={node.rank}
-          $volume={node.originalValue}
-          as={Link}
-          to={`/leaderboard/profile/${node.id}`}
-        >
-         <NodeHeader>
-  <WalletInfo>
-    <WalletAvatar $rank={node.rank}>
-      <StatusIcon account={node.id} connection={connection} size={node.rank <= 3 ? 36 : 28} showMiniIcons={false} />
-    </WalletAvatar>
-    {node.width > 120 && (
-      <WalletDetails>
-        <WalletAddressStyled>
-          {formatUserAddress(node.id)}
-        </WalletAddressStyled>
-      </WalletDetails>
-    )}
-  </WalletInfo>
-  <RankBadge $rank={node.rank}>
-    #{node.rank}
-  </RankBadge>
-</NodeHeader>
-
-          {node.height > 60 && (
-            <VolumeDisplay>
-              <VolumeAmount>${formatVolume(node.originalValue)}</VolumeAmount>
-            </VolumeDisplay>
-          )}
-
-          <MiniChart $visible={node.width > 140 && node.height > 100}>
-            <UserChart userId={node.id} color={theme.accent1} />
-          </MiniChart>
-        </TreemapNode>
-      ))}
-    </div>
-  );
-};
-
-// Chart component for user transactions using real data
-
+// User chart component (simplified for smaller nodes)
 const UserChart = ({
   userId,
   color = "rgba(255,255,255,0.8)",
@@ -788,7 +792,6 @@ const UserChart = ({
   const { data: historicalData } = useUserHistoricalData(userId, 7);
 
   const chartData = useMemo(() => {
-    // Calcola gli ultimi 7 giorni precisi usando timestamp
     const now = new Date();
     const last7Days = [];
     
@@ -800,26 +803,23 @@ const UserChart = ({
     }
 
     if (!historicalData || historicalData.length === 0) {
-      // Fallback: crea pattern di crescita per 7 giorni anche senza dati reali
       return last7Days.map((timestamp, index) => ({
         index,
-        value: 20 + (index * 10), // Pattern crescente base
+        value: 20 + (index * 10),
         timestamp,
         volume: 0,
       }));
     }
 
-    // Crea mappa dei dati esistenti per timestamp
     const dataMap = new Map();
     historicalData.forEach((d) => {
       const dayTimestamp = d.date || 0;
       dataMap.set(dayTimestamp, parseFloat(d.dailyVolumeUSD || "0"));
     });
 
-    // Calcola volume cumulativo per esattamente gli ultimi 7 giorni
     let cumulativeVolume = 0;
     const last7DaysData = last7Days.map((timestamp) => {
-      const dailyVolume = dataMap.get(timestamp) || 0; // 0 se nessun movimento
+      const dailyVolume = dataMap.get(timestamp) || 0;
       cumulativeVolume += dailyVolume;
       return {
         timestamp,
@@ -828,15 +828,12 @@ const UserChart = ({
       };
     });
 
-    // Normalizza per il chart (crescita cumulativa)
     const maxCumulativeVolume = Math.max(...last7DaysData.map(d => d.cumulativeVolume), 1);
     
     const points = last7DaysData.map((day, index) => {
-      // Se non c'è volume, la linea rimane piatta rispetto al punto precedente
-      // Se c'è volume, cresce proporzionalmente
       const normalizedY = maxCumulativeVolume > 0
         ? 20 + ((day.cumulativeVolume / maxCumulativeVolume) * 60)
-        : 20 + (index * 2); // Crescita minima anche senza dati
+        : 20 + (index * 2);
         
       return {
         index,
@@ -850,13 +847,11 @@ const UserChart = ({
     return points;
   }, [historicalData]);
 
-  // Convert color to hex if it's rgba for better Recharts compatibility
   const getHexColor = (colorString: string) => {
     if (colorString.startsWith('rgba(255,255,255')) {
       return '#ffffff';
     }
     if (colorString.startsWith('rgba(')) {
-      // Extract RGB values and convert to hex
       const match = colorString.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
       if (match) {
         const r = parseInt(match[1]).toString(16).padStart(2, '0');
@@ -914,6 +909,180 @@ const UserChart = ({
   );
 };
 
+// Treemap component using D3 with adaptive sizing
+interface TreemapComponentProps {
+  users: any[];
+  totalVolume: number;
+  width: number;
+  height: number;
+  connection: Connection;
+  maxUsers: number; // NEW: limit number of users shown
+}
+
+const TreemapComponent = ({
+  users,
+  totalVolume,
+  width,
+  height,
+  connection,
+  maxUsers,
+}: TreemapComponentProps) => {
+  const theme = useTheme();
+
+  const treemapData = useMemo(() => {
+    if (!users || users.length === 0) return [];
+
+    // Limit users to maxUsers for better readability
+    const limitedUsers = users.slice(0, maxUsers);
+
+    const data = limitedUsers.map((user, index) => {
+      const volume = parseFloat(user.totalVolumeUSD || "0");
+
+      return {
+        id: user.id,
+        originalValue: volume,
+        rank: index + 1,
+        percentage:
+          totalVolume > 0 ? ((volume / totalVolume) * 100).toFixed(2) : "0.00",
+      };
+    });
+
+    const values = data.map((d) => d.originalValue).filter((v) => v > 0);
+    if (values.length === 0) return [];
+
+    // Improved normalization for better balance
+    const normalizedData = data.map((d) => {
+      let normalizedValue;
+
+      if (d.originalValue <= 0) {
+        normalizedValue = 150; // Higher base for zero volumes
+      } else if (d.rank === 1) {
+        // Top user gets significant but not overwhelming size
+        normalizedValue = Math.log(d.originalValue + 1) * 100 + 800;
+      } else if (d.rank <= 3) {
+        normalizedValue = Math.log(d.originalValue + 1) * 90 + 500;
+      } else if (d.rank <= 10) {
+        normalizedValue = Math.log(d.originalValue + 1) * 80 + 300;
+      } else {
+        normalizedValue = Math.log(d.originalValue + 1) * 70 + 200;
+      }
+
+      return {
+        ...d,
+        value: normalizedValue,
+      };
+    });
+
+    const root = d3
+      .hierarchy({ children: normalizedData })
+      .sum((d) => (d as any).value)
+      .sort((a, b) => ((a as any).rank || 0) - ((b as any).rank || 0));
+
+    const treemap = d3
+      .treemap<any>()
+      .size([width, height])
+      .padding(8)
+      .paddingInner(12)
+      .paddingOuter(20)
+      .round(true);
+
+    treemap(root);
+
+    return (root.leaves() as any[]).map((d: any) => {
+      const nodeWidth = Math.max(d.x1 - d.x0, 140);
+      const nodeHeight = Math.max(d.y1 - d.y0, 100);
+      
+      // Determine what to show based on size
+      const showFullDetails = nodeWidth > 180 && nodeHeight > 120;
+      const showMinimalDetails = nodeWidth > 120 && nodeHeight > 80;
+      
+      return {
+        ...d.data,
+        x: d.x0,
+        y: d.y0,
+        width: nodeWidth,
+        height: nodeHeight,
+        showFullDetails,
+        showMinimalDetails,
+      };
+    });
+  }, [users, totalVolume, width, height, maxUsers]);
+
+  const formatUserAddress = (address: string, compact: boolean = false) => {
+    if (!address) return "0x...";
+    if (compact) {
+      return `${address.slice(0, 4)}...${address.slice(-2)}`;
+    }
+    return `${address.slice(0, 6)}...${address.slice(-4)}`;
+  };
+
+  const formatVolume = (volume: number) => {
+    if (volume >= 1000000) return (volume / 1000000).toFixed(2) + "M";
+    if (volume >= 1000) return (volume / 1000).toFixed(2) + "K";
+    return volume.toFixed(2);
+  };
+
+  return (
+    <div style={{ position: "relative", width: "100%", height: "100%" }}>
+      {treemapData.map((node: any) => {
+        const isCompact = !node.showMinimalDetails;
+        const avatarSize = node.showFullDetails ? 36 : node.showMinimalDetails ? 28 : 20;
+        const fontSize = node.showFullDetails ? 11 : node.showMinimalDetails ? 9 : 8;
+        const volumeFontSize = node.showFullDetails ? 12 : node.showMinimalDetails ? 10 : 8;
+        const rankBadgeSize = node.showFullDetails ? 24 : node.showMinimalDetails ? 20 : 16;
+        
+        return (
+          <TreemapNode
+            key={node.id}
+            $x={node.x}
+            $y={node.y}
+            $width={node.width}
+            $height={node.height}
+            $rank={node.rank}
+            $volume={node.originalValue}
+            $showDetails={node.showMinimalDetails}
+            as={Link}
+            to={`/leaderboard/profile/${node.id}`}
+          >
+            <NodeHeader $compact={isCompact}>
+              <WalletInfo $compact={isCompact}>
+                <WalletAvatar $rank={node.rank} $size={avatarSize}>
+                  <StatusIcon 
+                    account={node.id} 
+                    connection={connection} 
+                    size={avatarSize} 
+                    showMiniIcons={false} 
+                  />
+                </WalletAvatar>
+                {node.showMinimalDetails && (
+                  <WalletDetails $compact={isCompact}>
+                    <WalletAddressStyled $fontSize={fontSize}>
+                      {formatUserAddress(node.id, isCompact)}
+                    </WalletAddressStyled>
+                  </WalletDetails>
+                )}
+              </WalletInfo>
+              <RankBadge $rank={node.rank} $size={rankBadgeSize}>
+                #{node.rank}
+              </RankBadge>
+            </NodeHeader>
+
+            <VolumeDisplay $show={node.showMinimalDetails && node.height > 80}>
+              <VolumeAmount $fontSize={volumeFontSize}>
+                ${formatVolume(node.originalValue)}
+              </VolumeAmount>
+            </VolumeDisplay>
+
+            <MiniChart $visible={node.showFullDetails && node.width > 200 && node.height > 140}>
+              <UserChart userId={node.id} color={theme.accent1} />
+            </MiniChart>
+          </TreemapNode>
+        );
+      })}
+    </div>
+  );
+};
+
 // Component per calcolare performance reali di un utente
 const UserPerformanceData = ({
   userId,
@@ -927,37 +1096,21 @@ const UserPerformanceData = ({
   const { data: historicalData } = useUserHistoricalData(userId, 7);
 
   const performanceData = useMemo(() => {
-    console.log(
-      "UserPerformanceData - userId:",
-      userId,
-      "historicalData:",
-      historicalData,
-      "currentVolume:",
-      currentVolume
-    );
-
-    // Se non abbiamo dati storici sufficienti
     if (!historicalData || historicalData.length === 0) {
-      console.log("No historical data available");
       if (currentVolume && currentVolume > 0) {
-        // Se c'è volume attuale ma nessun dato storico, significa che è il primo giorno
-        // Non possiamo calcolare una crescita percentuale senza punto di confronto
-        // Ma se è il primo giorno di attività, potremmo considerarlo come 100% o N/A
-        return { change24h: 0, change7d: 0 }; // o return { change24h: null, change7d: null }
+        return { change24h: 0, change7d: 0 };
       }
       return { change24h: 0, change7d: 0 };
     }
 
-    // Converti i dati e ordina per data (più vecchio prima per calcolare cumulative)
     const sortedDataByDate = [...historicalData]
       .map((d) => ({
         ...d,
         dailyVolume: parseFloat(d.dailyVolumeUSD || "0"),
         timestamp: d.date || 0,
       }))
-      .sort((a, b) => a.timestamp - b.timestamp); // Ordina dal più vecchio al più recente
+      .sort((a, b) => a.timestamp - b.timestamp);
 
-    // Calcola il volume cumulativo per ogni giorno
     let cumulativeVolume = 0;
     const dataWithCumulative = sortedDataByDate.map((d) => {
       cumulativeVolume += d.dailyVolume;
@@ -967,95 +1120,60 @@ const UserPerformanceData = ({
       };
     });
 
-    // Ora ordina per data (più recente prima) per i calcoli
     const sortedData = dataWithCumulative.sort(
       (a, b) => b.timestamp - a.timestamp
     );
 
-    console.log(
-      "Sorted data:",
-      sortedData.slice(0, 7).map((d) => ({
-        date: d.timestamp,
-        formattedDate: new Date(d.timestamp * 1000).toISOString(),
-        totalVolume: d.totalVolume,
-        dailyVolume: d.dailyVolume,
-      }))
-    );
-
-    // Per il calcolo delle percentuali, usa il volume totale
-    // Se currentVolume è fornito, usalo, altrimenti usa l'ultimo calcolato
     const currentTotalVolume = currentVolume ?? sortedData[0]?.totalVolume ?? 0;
 
     let change24h = 0;
     let change7d = 0;
 
-    // Calcolo 24h - confronta volume totale attuale con quello di ieri
     if (sortedData.length >= 2) {
       const yesterdayTotalVolume = sortedData[1].totalVolume;
 
       if (yesterdayTotalVolume === 0 && currentTotalVolume > 0) {
-        // Da zero a qualcosa = crescita infinita, ma mostriamo 100%
         change24h = 100;
       } else if (yesterdayTotalVolume > 0) {
-        // Calcolo percentuale normale: (nuovo - vecchio) / vecchio * 100
         change24h =
           ((currentTotalVolume - yesterdayTotalVolume) / yesterdayTotalVolume) *
           100;
       } else {
-        // Entrambi zero = nessun cambiamento
         change24h = 0;
       }
     } else if (sortedData.length === 1 && currentTotalVolume > 0) {
-      // Se abbiamo solo un dato e c'è volume, significa crescita da 0
       change24h = 100;
     }
 
-    // Calcolo 7d - confronta volume totale attuale con quello di una settimana fa
     if (sortedData.length >= 7) {
       const weekAgoTotalVolume = sortedData[6].totalVolume;
 
       if (weekAgoTotalVolume === 0 && currentTotalVolume > 0) {
-        // Da zero a qualcosa = crescita infinita, ma mostriamo 100%
         change7d = 100;
       } else if (weekAgoTotalVolume > 0) {
-        // Calcolo percentuale normale
         change7d =
           ((currentTotalVolume - weekAgoTotalVolume) / weekAgoTotalVolume) *
           100;
       } else {
-        // Entrambi zero = nessun cambiamento
         change7d = 0;
       }
     } else if (sortedData.length >= 2) {
-      // Se non abbiamo 7 giorni di dati, estrapola dal trend disponibile
-      const dailyGrowthRate = change24h / 100; // converti in decimale
+      const dailyGrowthRate = change24h / 100;
 
-      // Estrapola per 7 giorni (formula composta)
       if (dailyGrowthRate !== 0) {
         change7d = (Math.pow(1 + dailyGrowthRate, 7) - 1) * 100;
       }
     } else if (sortedData.length === 1 && currentTotalVolume > 0) {
-      // Se abbiamo solo un dato e c'è volume, significa crescita da 0
       change7d = 100;
     }
 
-    // Limita i valori a un range ragionevole
-    change24h = Math.max(-99, Math.min(change24h, 1000)); // Non può scendere sotto -99%
-    change7d = Math.max(-99, Math.min(change7d, 2000)); // Non può scendere sotto -99%
+    change24h = Math.max(-99, Math.min(change24h, 1000));
+    change7d = Math.max(-99, Math.min(change7d, 2000));
 
     const result = {
       change24h: Math.round(change24h * 100) / 100,
       change7d: Math.round(change7d * 100) / 100,
     };
-
-    console.log("Performance result:", {
-      ...result,
-      dataPoints: sortedData.length,
-      currentTotal: currentTotalVolume,
-      yesterdayTotal: sortedData[1]?.totalVolume,
-      weekAgoTotal: sortedData[6]?.totalVolume,
-      currentVolumeParam: currentVolume,
-    });
 
     return result;
   }, [historicalData, userId, currentVolume]);
@@ -1084,30 +1202,42 @@ const calculatePercentage = (userVolume: string, totalVolume: number) => {
 export default function Leaderboard() {
   const { account, connector } = useWeb3React();
   const theme = useTheme();
-  const [selectedCategory, setSelectedCategory] = useState("Top20");
+  const [viewMode, setViewMode] = useState<'treemap' | 'grid'>('treemap');
+  const [maxUsers, setMaxUsers] = useState(20); // NEW: controllable number of users
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerDimensions, setContainerDimensions] = useState({
     width: 800,
     height: 720,
   });
 
-  // Get current connection for StatusIcon
   const connection = getConnection(connector);
 
   const {
     users: allTimeUsers,
     loading: allTimeLoading,
     error: allTimeError,
-  } = useLeaderboard(50);
+  } = useLeaderboard(100); // Fetch more users to have flexibility
 
-  // Update container dimensions when ref changes
+  // Get the actual number of users available
+  const availableUsersCount = allTimeUsers?.length || 0;
+
+  // Update maxUsers when available users change, but keep it within bounds
+  useEffect(() => {
+    if (availableUsersCount > 0) {
+      // If current maxUsers exceeds available users, adjust it
+      if (maxUsers > availableUsersCount) {
+        setMaxUsers(Math.min(availableUsersCount, 20)); // Default to 20 or available count
+      }
+    }
+  }, [availableUsersCount, maxUsers]);
+
   useEffect(() => {
     const updateDimensions = () => {
       if (containerRef.current) {
         const { clientWidth, clientHeight } = containerRef.current;
         setContainerDimensions({
           width: clientWidth || 600,
-          height: Math.max(clientHeight - 48, 500), // Dimensioni più compatte
+          height: Math.max(clientHeight - 48, 500),
         });
       }
     };
@@ -1124,13 +1254,12 @@ export default function Leaderboard() {
   const isLoading = allTimeLoading;
   const error = allTimeError;
 
-  // Take top 30 users for the tree map (increased from 20)
+  // Take top users based on maxUsers setting
   const topUsers = useMemo(() => {
     if (!currentUsers || currentUsers.length === 0) return [];
-    return currentUsers.slice(0, 30);
-  }, [currentUsers]);
+    return currentUsers.slice(0, Math.min(maxUsers, currentUsers.length));
+  }, [currentUsers, maxUsers]);
 
-  // Calculate total volume for percentage calculations
   const totalVolume = useMemo(() => {
     if (!topUsers || topUsers.length === 0) return 0;
     return topUsers.reduce((sum: number, user: any) => {
@@ -1139,7 +1268,6 @@ export default function Leaderboard() {
     }, 0);
   }, [topUsers]);
 
-  // Process users for sidebar (complete leaderboard)
   const sidebarUsers = useMemo(() => {
     if (!topUsers || topUsers.length === 0) return [];
 
@@ -1155,20 +1283,18 @@ export default function Leaderboard() {
           (user as any).totalVolumeUSD,
           totalVolume
         ),
-        // Add current volume for fallback performance calculation
         currentVolume: volume,
       };
     });
   }, [topUsers, totalVolume]);
 
-  // Calculate dynamic height for treemap
   const dynamicHeight = useMemo(() => {
-    return calculateTreemapHeight(topUsers.length);
-  }, [topUsers.length]);
+    return calculateTreemapHeight(Math.min(maxUsers, topUsers.length));
+  }, [topUsers.length, maxUsers]);
 
   return (
     <PageWrapper>
-      <Container>        {/* Left Sidebar */}
+      <Container>
         <Sidebar>
           <SidebarContent>
             <SectionHeader>
@@ -1189,6 +1315,43 @@ export default function Leaderboard() {
               </MouseoverTooltip>
             </SectionHeader>
 
+            <ControlsSection>
+              <FilterSection>
+                <FilterLabel>View Mode</FilterLabel>
+                <ViewModeToggle>
+                  <ViewModeButton 
+                    $active={viewMode === 'treemap'} 
+                    onClick={() => setViewMode('treemap')}
+                  >
+                    <Grid size={14} />
+                    Map
+                  </ViewModeButton>
+                  <ViewModeButton 
+                    $active={viewMode === 'grid'} 
+                    onClick={() => setViewMode('grid')}
+                  >
+                    <List size={14} />
+                    Grid
+                  </ViewModeButton>
+                </ViewModeToggle>
+              </FilterSection>
+
+              <FilterSection>
+                <FilterLabel>Users Shown: {maxUsers} / {availableUsersCount}</FilterLabel>
+                <FilterSlider
+                  type="range"
+                  min="10"
+                  max={Math.max(10, availableUsersCount)} // Dynamic max based on available users
+                  value={Math.min(maxUsers, availableUsersCount)} // Ensure value doesn't exceed available
+                  onChange={(e) => setMaxUsers(parseInt(e.target.value))}
+                  disabled={availableUsersCount === 0} // Disable if no users
+                />
+                <FilterValue>
+                  {Math.min(maxUsers, availableUsersCount)} of {availableUsersCount} traders
+                </FilterValue>
+              </FilterSection>
+            </ControlsSection>
+
             <UserList>
               {sidebarUsers.map((trader) => (
                 <UserPerformanceData
@@ -1198,16 +1361,21 @@ export default function Leaderboard() {
                 >
                   {(performanceData) => (
                     <UserItem to={`/leaderboard/profile/${trader.address}`}>
-                     <UserMainInfo>
-        <RankPosition $rank={trader.rank} />
-        <WalletIcon>
-          <StatusIcon account={trader.address} connection={connection} size={40} showMiniIcons={false} />
-        </WalletIcon>
-        <UserDetails>
-          <WalletAddress>{formatUserAddress(trader.address)}</WalletAddress>
-          <VolumeText>${trader.volume}</VolumeText>
-        </UserDetails>
-      </UserMainInfo>
+                      <UserMainInfo>
+                        <RankPosition $rank={trader.rank} />
+                        <WalletIcon>
+                          <StatusIcon 
+                            account={trader.address} 
+                            connection={connection} 
+                            size={40} 
+                            showMiniIcons={false} 
+                          />
+                        </WalletIcon>
+                        <UserDetails>
+                          <WalletAddress>{formatUserAddress(trader.address)}</WalletAddress>
+                          <VolumeText>${trader.volume}</VolumeText>
+                        </UserDetails>
+                      </UserMainInfo>
                       <PerformanceStats>
                         <SidebarVolumeAmount>
                           ${trader.volume}
@@ -1227,7 +1395,6 @@ export default function Leaderboard() {
           </SidebarContent>
         </Sidebar>
 
-        {/* Main Content */}
         <MainContent>
           <Header>
             <HeaderLeft>
@@ -1237,88 +1404,155 @@ export default function Leaderboard() {
                   Volume Contest
                 </ContestTitle>
                 <ContestDescription>
-                  Compete with other traders to climb the leaderboard. Higher rankings increase your chances for future airdrops and exclusive rewards!
+                  Compete with other traders to climb the leaderboard. Use the controls to adjust the view and number of traders shown.
                 </ContestDescription>
               </HeaderContent>
             </HeaderLeft>
           </Header>
 
-          <TreeMapContainer ref={containerRef}>
-            {isLoading ? (
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  height: "400px",
-                  color: "#9ca3af",
-                  fontSize: "18px",
-                  fontWeight: "500",
-                }}
-              >
+          {viewMode === 'treemap' ? (
+            <TreeMapContainer ref={containerRef}>
+              {isLoading ? (
                 <div
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    gap: "12px",
-                    padding: "24px 32px",
-                    background: "rgba(255, 255, 255, 0.05)",
-                    borderRadius: "16px",
-                    backdropFilter: "blur(10px)",
+                    justifyContent: "center",
+                    height: "400px",
+                    color: "#9ca3af",
+                    fontSize: "18px",
+                    fontWeight: "500",
                   }}
                 >
                   <div
                     style={{
-                      width: "20px",
-                      height: "20px",
-                      border: "2px solid rgba(255, 255, 255, 0.3)",
-                      borderTop: "2px solid currentColor",
-                      borderRadius: "50%",
-                      animation: "spin 1s linear infinite",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "12px",
+                      padding: "24px 32px",
+                      background: "rgba(255, 255, 255, 0.05)",
+                      borderRadius: "16px",
+                      backdropFilter: "blur(10px)",
                     }}
-                  />
-                  Loading leaderboard...
+                  >
+                    <div
+                      style={{
+                        width: "20px",
+                        height: "20px",
+                        border: "2px solid rgba(255, 255, 255, 0.3)",
+                        borderTop: "2px solid currentColor",
+                        borderRadius: "50%",
+                        animation: "spin 1s linear infinite",
+                      }}
+                    />
+                    Loading leaderboard...
+                  </div>
                 </div>
-              </div>
-            ) : error ? (
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  height: "400px",
-                  color: "#ef4444",
-                  fontSize: "18px",
-                  fontWeight: "500",
-                }}
-              >
+              ) : error ? (
                 <div
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    gap: "12px",
-                    padding: "24px 32px",
-                    background: "rgba(239, 68, 68, 0.1)",
-                    borderRadius: "16px",
-                    backdropFilter: "blur(10px)",
-                    border: "1px solid rgba(239, 68, 68, 0.2)",
+                    justifyContent: "center",
+                    height: "400px",
+                    color: "#ef4444",
+                    fontSize: "18px",
+                    fontWeight: "500",
                   }}
                 >
-                  ⚠️ Error loading data: {error}
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "12px",
+                      padding: "24px 32px",
+                      background: "rgba(239, 68, 68, 0.1)",
+                      borderRadius: "16px",
+                      backdropFilter: "blur(10px)",
+                      border: "1px solid rgba(239, 68, 68, 0.2)",
+                    }}
+                  >
+                    ⚠️ Error loading data: {error}
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <TreeMapWrapper $dynamicHeight={dynamicHeight}>
-                <TreemapComponent
-                  users={topUsers}
-                  totalVolume={totalVolume}
-                  width={containerDimensions.width - 48} // Sottraiamo il padding del container
-                  height={dynamicHeight - 48} // Usa l'altezza dinamica meno il padding
-                  connection={connection}
-                />
-              </TreeMapWrapper>
-            )}
-          </TreeMapContainer>
+              ) : (
+                <TreeMapWrapper $dynamicHeight={dynamicHeight}>
+                  <TreemapComponent
+                    users={topUsers}
+                    totalVolume={totalVolume}
+                    width={containerDimensions.width - 48}
+                    height={dynamicHeight - 48}
+                    connection={connection}
+                    maxUsers={maxUsers}
+                  />
+                </TreeMapWrapper>
+              )}
+            </TreeMapContainer>
+          ) : (
+            <GridContainer>
+              {isLoading ? (
+                <div style={{ gridColumn: "1 / -1", textAlign: "center", padding: "40px" }}>
+                  Loading...
+                </div>
+              ) : error ? (
+                <div style={{ gridColumn: "1 / -1", textAlign: "center", padding: "40px", color: "#ef4444" }}>
+                  Error: {error}
+                </div>
+              ) : (
+                topUsers.map((user, index) => {
+                  const volume = parseFloat(user.totalVolumeUSD || "0");
+                  
+                  return (
+                    <UserPerformanceData
+                      key={user.id}
+                      userId={user.id}
+                      currentVolume={volume}
+                    >
+                      {(performanceData) => (
+                        <GridUserCard to={`/leaderboard/profile/${user.id}`}>
+                          <GridUserHeader>
+                            <GridUserInfo>
+                              <WalletAvatar $rank={index + 1} $size={44}>
+                                <StatusIcon 
+                                  account={user.id} 
+                                  connection={connection} 
+                                  size={44} 
+                                  showMiniIcons={false} 
+                                />
+                              </WalletAvatar>
+                              <UserDetails>
+                                <WalletAddress>{formatUserAddress(user.id)}</WalletAddress>
+                                <VolumeText>Rank #{index + 1}</VolumeText>
+                              </UserDetails>
+                            </GridUserInfo>
+                            <RankBadge $rank={index + 1} $size={24}>
+                              #{index + 1}
+                            </RankBadge>
+                          </GridUserHeader>
+                          
+                          <GridUserStats>
+                            <GridVolumeDisplay>
+                              <GridVolumeAmount>
+                                ${formatVolume(volume)}
+                              </GridVolumeAmount>
+                              <GridPerformanceChange $positive={performanceData.change24h > 0}>
+                                {performanceData.change24h > 0 ? "+" : ""}
+                                {performanceData.change24h.toFixed(1)}%
+                              </GridPerformanceChange>
+                            </GridVolumeDisplay>
+                            
+                            <GridMiniChart>
+                              <UserChart userId={user.id} color={theme.accent1} />
+                            </GridMiniChart>
+                          </GridUserStats>
+                        </GridUserCard>
+                      )}
+                    </UserPerformanceData>
+                  );
+                })
+              )}
+            </GridContainer>
+          )}
         </MainContent>
       </Container>
     </PageWrapper>
