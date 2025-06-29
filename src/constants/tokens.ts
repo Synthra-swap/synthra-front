@@ -90,6 +90,16 @@ export const USDC_UOMI = new Token(
 )
 
 
+export const SYNTHRA_UOMI = new Token(
+  ChainId.UOMI,
+  '0x2922B2Ca5EB6b02fc5E1EBE57Fc1972eBB99F7e0',
+  18,
+  'Synthra',
+  'SYN'
+)
+
+
+
 
 export const DAI = new Token(ChainId.MAINNET, '0x6B175474E89094C44Da98b954EedeAC495271d0F', 18, 'DAI', 'Dai Stablecoin')
 export const DAI_ARBITRUM_ONE = new Token(
@@ -259,6 +269,7 @@ export const DAI_AVALANCHE = new Token(
   'DAI.e',
   'Dai.e Token'
 )
+
 
 export const UNI: { [chainId: number]: Token } = {
   [ChainId.MAINNET]: new Token(ChainId.MAINNET, UNI_ADDRESSES[ChainId.MAINNET], 18, 'UNI', 'Uniswap'),

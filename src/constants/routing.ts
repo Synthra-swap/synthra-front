@@ -29,6 +29,7 @@ import {
   USDC_OPTIMISM,
   USDC_POLYGON,
   USDC_UOMI,
+  SYNTHRA_UOMI,
   USDT,
   USDT_ARBITRUM_ONE,
   USDT_AVALANCHE,
@@ -120,6 +121,7 @@ export const COMMON_BASES: ChainCurrencyList = {
     nativeOnChain(ChainId.UOMI),
     WRAPPED_NATIVE_CURRENCY[ChainId.UOMI] as Token,
     USDC_UOMI,
+    SYNTHRA_UOMI,
   ],
 }
 

@@ -43,18 +43,33 @@ function combineMaps(map1: TokenAddressMap, map2: TokenAddressMap): TokenAddress
 // merge tokens contained within lists from urls
 export function useCombinedTokenMapFromUrls(urls: string[] | undefined): TokenAddressMap {
   const lists = useAllLists()
+  console.log('useCombinedTokenMapFromUrls - urls:', urls)
+  console.log('useCombinedTokenMapFromUrls - all lists:', lists)
+  
   return useMemo(() => {
     if (!urls) return {}
     return (
       urls
         .slice()
-        // sort by priority so top priority goes last
         .sort(sortByListPriority)
         .reduce((allTokens, currentUrl) => {
           const current = lists[currentUrl]?.current
-          if (!current) return allTokens
+          console.log(`Processing URL: ${currentUrl}`)
+          console.log(`List data for ${currentUrl}:`, current)
+          
+          if (!current) {
+            console.log(`No current list for ${currentUrl}`)
+            return allTokens
+          }
+          
           try {
-            return combineMaps(allTokens, tokensToChainTokenMap(current))
+            const chainTokenMap = tokensToChainTokenMap(current)
+            console.log(`Tokens from ${currentUrl}:`, chainTokenMap)
+            
+            const combined = combineMaps(allTokens, chainTokenMap)
+            console.log(`Combined tokens after ${currentUrl}:`, combined)
+            
+            return combined
           } catch (error) {
             console.error('Could not show token list due to error', error)
             return allTokens
