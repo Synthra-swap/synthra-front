@@ -5883,10 +5883,10 @@
   resolved "https://registry.yarnpkg.com/@uniswap/default-token-list/-/default-token-list-11.19.0.tgz#12d4e40f6c79f794d3e3a71e2d4d9784fb6c967b"
   integrity sha512-H/YLpxeZUrzT4Ki8mi4k5UiadREiLHg7WUqCv0Qt/VkOjX2mIBhrxCj1Wh61/J7lK0XqOjksfpm6RG1+YErPoQ==
 
-"@uniswap/default-token-list@^12.27.0":
-  version "12.35.0"
-  resolved "https://registry.yarnpkg.com/@uniswap/default-token-list/-/default-token-list-12.35.0.tgz#3fc718e4e9df4e2f7b9b0b43d719bc5e60c0756c"
-  integrity sha512-gllrXFcVYq91UUnWrXGBvDwLAzhAYadzA4EuhiURqWUrQVM9Vvo1RHAirWAoNVsYsUl1HMRdVQQOiNZYgjA0hg==
+"@uniswap/default-token-list@^13.39.0":
+  version "13.39.0"
+  resolved "https://registry.yarnpkg.com/@uniswap/default-token-list/-/default-token-list-13.39.0.tgz#0de1ee82b83dc56809be5e352b3485fd97166a78"
+  integrity sha512-YHcrnekflhxg0lfnPhJko5p+Yk1u1BD+NYP8E/cb5JNcHqC4NZsCtvEvTz+DL6XrJO8H2ukS7DYATSIR55Zkig==
 
 "@uniswap/eslint-config@^1.2.0":
   version "1.2.0"
